@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CanteenClass</class>
+ <widget class="QMainWindow" name="CanteenClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>754</width>
+    <height>541</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Canteen</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGroupBox" name="logInGroupBox">
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <family>Times New Roman</family>
+           <pointsize>26</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string> Welcome to Canteen</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="menuGroupBox">
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QPushButton" name="showMenuButton">
+            <property name="text">
+             <string>Show Menu</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="orderButton">
+            <property name="text">
+             <string>Order</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="ShowOrderButton">
+            <property name="text">
+             <string>Show Order</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cancelButton">
+            <property name="text">
+             <string>Cancel Meal</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QTreeWidget" name="treeOrder">
+         <column>
+          <property name="text">
+           <string>Day</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Meal</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Price</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Student Price</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QTreeWidget" name="treeMenu">
+         <column>
+          <property name="text">
+           <string>Day</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Meal</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Price</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Student Price</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="orderGroupBox">
+      <property name="title">
+       <string/>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="ShowCreditButton">
+         <property name="text">
+          <string>Show Credit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="LogOutButton">
+         <property name="text">
+          <string>Log Out</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>754</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAdmin">
+    <property name="title">
+     <string>Admin</string>
+    </property>
+    <addaction name="actionMenu_for_week"/>
+    <addaction name="separator"/>
+    <addaction name="actionChange_Login"/>
+   </widget>
+   <widget class="QMenu" name="menuEmployee">
+    <property name="title">
+     <string>Employee</string>
+    </property>
+    <addaction name="actionChangePostEmployee"/>
+   </widget>
+   <widget class="QMenu" name="menuStaff">
+    <property name="title">
+     <string>Staff</string>
+    </property>
+    <addaction name="actionNumber_of_Order"/>
+    <addaction name="separator"/>
+    <addaction name="actionChange_PositionStaff"/>
+   </widget>
+   <widget class="QMenu" name="menuStudent">
+    <property name="title">
+     <string>Student</string>
+    </property>
+    <addaction name="actionChange_Subject"/>
+   </widget>
+   <addaction name="menuAdmin"/>
+   <addaction name="menuEmployee"/>
+   <addaction name="menuStaff"/>
+   <addaction name="menuStudent"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_file">
+   <property name="text">
+    <string>SetUp Employees</string>
+   </property>
+  </action>
+  <action name="actionChange_Subject">
+   <property name="text">
+    <string>Change Subject</string>
+   </property>
+  </action>
+  <action name="actionChangePostEmployee">
+   <property name="text">
+    <string>Change Position</string>
+   </property>
+  </action>
+  <action name="actionPosition">
+   <property name="text">
+    <string>Position</string>
+   </property>
+  </action>
+  <action name="actionMenu_for_week">
+   <property name="text">
+    <string>Menu for week</string>
+   </property>
+  </action>
+  <action name="actionOrders_for_Monday">
+   <property name="text">
+    <string>Orders for Monday</string>
+   </property>
+  </action>
+  <action name="actionOrder_fot_Tuesday">
+   <property name="text">
+    <string>Order fot Tuesday</string>
+   </property>
+  </action>
+  <action name="actionOrder_for_Wednesday">
+   <property name="text">
+    <string>Order for Wednesday</string>
+   </property>
+  </action>
+  <action name="actionOrder_for_Thursday">
+   <property name="text">
+    <string>Order for Thursday</string>
+   </property>
+  </action>
+  <action name="actionOrder_for_Friday">
+   <property name="text">
+    <string>Order for Friday</string>
+   </property>
+  </action>
+  <action name="actionOrder_for_Saturday">
+   <property name="text">
+    <string>Order for Saturday</string>
+   </property>
+  </action>
+  <action name="actionOrder_for_Sunday">
+   <property name="text">
+    <string>Order for Sunday</string>
+   </property>
+  </action>
+  <action name="actionLogin_for_Staff">
+   <property name="text">
+    <string>SetUp Staff</string>
+   </property>
+  </action>
+  <action name="actionLogin_for_Students">
+   <property name="text">
+    <string>SetUp Students</string>
+   </property>
+  </action>
+  <action name="actionNumber_of_Order">
+   <property name="text">
+    <string>Number of Order</string>
+   </property>
+  </action>
+  <action name="actionChange_PositionStaff">
+   <property name="text">
+    <string>Change Position</string>
+   </property>
+  </action>
+  <action name="actionChange_Login">
+   <property name="text">
+    <string>Change Login</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="Canteen.qrc"/>
+ </resources>
+ <connections/>
+</ui>

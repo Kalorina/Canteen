@@ -1,0 +1,21 @@
+Polievka Slepacia,2.50
+Kuracie maso s ryzou,3.40
+Pizza Margaritta,3.50
+Polievka Paradajkova,1.50
+Vyprazany syr s hranolkami,2.80
+Salat s cestovinou,2.30
+Polievka Zeleninova,1.30
+Cestoviny so syrom,2.30
+Pizza Salamova,2.70
+Polievka Hrachova,1.40
+Risotto,2.90
+Pizza Veggie,1.90
+Polievka Hribova,1.60
+Bravcove maso so zemiakmi,2.50
+Ceasar Salat,2.10
+Gulas,2.60
+Cestoviny Bolognese,2.80 
+Sosovicovy privarok,2.40
+Polievka Vyvar,1.20
+Segedinsky gulas,2.70
+Cestoviny s kuracim masom,2.60
