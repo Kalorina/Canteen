@@ -14,21 +14,25 @@ public:
 		ordersUi->setupUi(this);
 	}
 
-	void setTable(QVector<QString> mealsName, QVector<QString> number) {
+	void setTable(QList<QString> mealsName, QList<int> number) {
 
-		ordersUi->tableWidget->setRowCount(mealsName.size());
+		ordersUi->tableWidget->setRowCount(21);
 		ordersUi->tableWidget->setColumnCount(2);
 
-		for (int i = 0; i < mealsName.size(); i++)
+		QString n;
+
+		for (int i = 0; i < 21; i++)
 		{
+			
 			QTableWidgetItem* meal1 = new QTableWidgetItem();
 			meal1->setText(mealsName[i]);
 
 			ordersUi->tableWidget->setItem(i, 0, meal1);
+			n.setNum(number[i]);
 
 			QTableWidgetItem* number1 = new QTableWidgetItem();
-			number1->setText(number[i]);
-			ordersUi->tableWidget->setItem(i, 2, number1);
+			number1->setText(n);
+			ordersUi->tableWidget->setItem(i, 1, number1);
 
 		}
 	}

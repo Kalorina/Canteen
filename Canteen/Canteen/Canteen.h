@@ -2,29 +2,16 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets>
+
 #include "ui_Canteen.h"
 #include "LoginDialog.h"
 #include "Orders.h"
+#include "ChangeStatus.h"
+#include "AdminDIalog.h"
+
 #include "Users.h"
 #include "Meal.h"
 #include "Day.h"
-
-
-class NumberOfMeals {
-private:
-    QString mealName;
-    int number;
-public:
-    NumberOfMeals() { mealName = ""; number = 0; }
-    NumberOfMeals(QString name, int n) { mealName = name; number = n; }
-
-    void setMealName(QString name) { mealName = name; }
-    void setNumber(int n) { number = n; }
-
-    QString getMealName() { return mealName; }
-    int getNumber() { return number; }
-
-};
 
 class Canteen : public QMainWindow
 {
@@ -36,15 +23,18 @@ public:
 private:
     Ui::CanteenClass ui;
     LoginDialog* login;
-    Orders* numberoforders;
+    Orders* ordersTable;
+    ChangeStatus* statusChange;
+    AdminDialog* adminField;
 
     void SignIn(); 
 
+    float discount=0.2;
     QString AdminName="admin";
     QString AdminPass="123";
-    Administrator admin = Administrator(AdminName, AdminPass);
+    Administrator admin = Administrator(AdminName, AdminPass, discount);
 
-    void setAdmin(QString n, QString p);
+    void setAdmin(QString n, QString p, float d);
 
     QVector<Employee> employees;
     QVector<Student> students;
@@ -68,24 +58,25 @@ private:
     QVector<QString> menuData;
     QVector<QString> meals;
     QVector<Day> days = { Day(),Day(),Day(),Day(), Day(),Day(), Day()};
-    int menucount=0, loadMenuFileCount=0;
     void fillMenuData();
 
-    Day mondayO, tuesdayO, wednesdayO, thursdayO, fridayO, saturdayO, sundayO;
-       
     int findMealDay(QString s);
 
-    NumberOfMeals nMonday, nTuesday, nWednesday, nThursday, nFriday, nSaturday, nSunday;
-    QVector<QString> mealsName;
-    QVector<QString> mealsNumber;
+    QMap<QString,int> numberOfOrders;
 
 private slots:
 
     void DialogAccepted();
+    void DialogOrdersAccepted();
+    void DialogChangeStatusAccepted();
+    void DialogAdmiAccepted();
 
     void on_actionMenu_for_week_triggered(); 
+    void on_actionChange_Login_triggered();
 
     void on_actionChangePostEmployee_triggered();
+    void on_actionChange_PositionStaff_triggered();
+    void on_actionChange_Subject_triggered();
 
     void on_actionNumber_of_Order_triggered();
 

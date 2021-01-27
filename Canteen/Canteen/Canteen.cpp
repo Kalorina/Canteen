@@ -19,17 +19,12 @@ Canteen::Canteen(QWidget *parent)
     SignIn();
 }
 
-void Canteen::SignIn()
-{
-    login = new LoginDialog(this);
-    connect(login, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
-    login->exec();
-}
 
-void Canteen::setAdmin(QString n, QString p)
+void Canteen::setAdmin(QString n, QString p,float d)
 {
     admin.setLoginName(n);
     admin.setPassword(p);
+    admin.setDiscount(d);
 }
 
 void Canteen::fillEmployees()
@@ -177,8 +172,6 @@ void Canteen::fillStaff()
 */
 }
 
-
-
 bool Canteen::findLoginStudent(QString name, QString pass)
 {
     bool a=false;
@@ -203,7 +196,7 @@ bool Canteen::findLoginStudent(QString name, QString pass)
 
 bool Canteen::findLoginEmployee(QString name, QString pass)
 {
-    bool a;
+    bool a = false;
     for (int i = 0; i < employees.size(); i++)
     {
         if (employees[i].getLoginName() == name) {
@@ -255,9 +248,9 @@ void Canteen::fillMenuData() {
         QStringList list1 = menuData[i * 3 + 0].split(QLatin1Char(','));
         QStringList list2 = menuData[i * 3 + 1].split(QLatin1Char(','));
         QStringList list3 = menuData[i * 3 + 2].split(QLatin1Char(','));
-        days[i].setMeal(list1.at(0), list1.at(1).toFloat(), 0.2, 0);
-        days[i].setMeal(list2.at(0), list2.at(1).toFloat(), 0.2, 1);
-        days[i].setMeal(list3.at(0), list3.at(1).toFloat(), 0.2, 2);
+        days[i].setMeal(list1.at(0), list1.at(1).toFloat(), discount, 0);
+        days[i].setMeal(list2.at(0), list2.at(1).toFloat(), discount, 1);
+        days[i].setMeal(list3.at(0), list3.at(1).toFloat(), discount, 2);
         days[i].setDayName(dayNames[i]);
 
     }
@@ -272,7 +265,7 @@ void Canteen::fillMenuData() {
             QTreeWidgetItem* childItem = new QTreeWidgetItem();
             childItem->setText(1, days[i].getMealName(j));
             childItem->setText(2, p.setNum(days[i].getMealPrice(j)));
-            childItem->setText(3, d.setNum(days[i].getMealPrice(j) - days[i].getMealPrice(j) * days[i].getMealDiscount(j)));
+            childItem->setText(3, d.setNum(days[i].getMealPrice(j) - days[i].getMealPrice(j) * discount));
 
             parent->addChild(childItem);
         }
@@ -297,8 +290,15 @@ int Canteen::findMealDay(QString str)
 
 //Login
 
-void Canteen::DialogAccepted() {
+void Canteen::SignIn()
+{
+    login = new LoginDialog(this);
+    connect(login, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    login->exec();
+}
 
+void Canteen::DialogAccepted() {
+    
     QMessageBox msgBox;
 
     loginType = login->getLoginType();
@@ -396,8 +396,82 @@ void Canteen::DialogAccepted() {
             }
         } while (i < staff.size());
     }
+}
 
+void Canteen::DialogOrdersAccepted()
+{
+    for (int i = 0; i < 21; i++)
+    {
+        int number = 0;
 
+        if (meals[i] == student.getOrder(i / 3).getName()) {
+            number++;
+        }
+        else if (meals[i] == employer.getOrder(i / 3).getName()) {
+            number++;
+        }
+        numberOfOrders.insert(meals[i], number);
+    }
+}
+
+void Canteen::DialogChangeStatusAccepted()
+{
+    QString newStatus = statusChange->getNewStatus();
+
+    if (loginType == "Student") {
+        student.setSubject(newStatus);
+    }
+    else if (loginType == "Employee") {
+        employer.setPost(newStatus);
+    }
+    else if (loginType == "Staff") {
+        member.setPost(newStatus);
+    }
+}
+
+void Canteen::DialogAdmiAccepted()
+{
+    QString currentLoginType = adminField->getloginType();
+
+    QString currentLoginName = adminField->getLoginName();
+    QString currentPassword = adminField->getPassword();
+
+    QString newLoginName = adminField->getNewLoginName();
+    QString newPassword = adminField->getNewPassword();
+    QString newCredit = adminField->getNewCredit();
+
+    QString newDiscount = adminField->getNewDiscount();
+    discount = newDiscount.toFloat();
+
+    if (currentLoginType == "Student") {
+        int i = 0;
+        do {
+            if (findLoginStudent(currentLoginName, currentPassword) == true) {
+                students[i].setLoginName(newLoginName);
+                students[i].setPassword(newPassword);
+                students[i].setCredit(newCredit.toFloat());
+            }
+        } while (i < students.size());
+    }
+    else if (currentLoginType == "Employee") {
+        int i = 0;
+        do {
+            if (findLoginStudent(currentLoginName, currentPassword) == true) {
+                employees[i].setLoginName(newLoginName);
+                employees[i].setPassword(newPassword);
+                employees[i].setCredit(newCredit.toFloat());
+            }
+        } while (i < employees.size());
+    }
+    else if (currentLoginType == "Staff") {
+        int i = 0;
+        do {
+            if (findLoginStudent(currentLoginName, currentPassword) == true) {
+                staff[i].setLoginName(newLoginName);
+                staff[i].setPassword(newPassword);
+            }
+        } while (i < staff.size());
+    }
 }
 
 //MenuBar
@@ -444,64 +518,55 @@ void Canteen::on_actionMenu_for_week_triggered() {
 
 }
 
+void Canteen::on_actionChange_Login_triggered()
+{
+    adminField = new AdminDialog(this);
+    connect(adminField, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    adminField->exec();
+}
+
 void Canteen::on_actionChangePostEmployee_triggered()
 {
-    
+    statusChange = new ChangeStatus(this);
+    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    statusChange->exec();
+
+}
+
+void Canteen::on_actionChange_PositionStaff_triggered()
+{
+    statusChange = new ChangeStatus(this);
+    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    statusChange->exec();
+}
+
+void Canteen::on_actionChange_Subject_triggered()
+{
+    statusChange = new ChangeStatus(this);
+    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    statusChange->exec();
 }
 
 void Canteen::on_actionNumber_of_Order_triggered()
 {
-    numberoforders = new Orders(this);
-    connect(numberoforders, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    ordersTable = new Orders(this);
+    connect(ordersTable, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+ /*
+    for (int i = 0; i < 21; i++)
+    {
+        int number = 0;
 
-    QString name;
-    int number;
-    QString n;
-
-    name = nMonday.getMealName();
-    number = nMonday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    name = nTuesday.getMealName();
-    number = nTuesday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    name = nWednesday.getMealName();
-    number = nWednesday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    name = nThursday.getMealName();
-    number = nThursday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    name = nFriday.getMealName();
-    number = nFriday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    name = nSaturday.getMealName();
-    number = nSaturday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    name = nSunday.getMealName();
-    number = nSunday.getNumber();
-    n.setNum(number);
-    mealsName.push_back(name);
-    mealsNumber.push_back(n);
-
-    numberoforders->setTable(mealsName, mealsNumber);
-    numberoforders->exec();
+        if (meals[i] == student.getOrder(i/3).getName()) {
+            number++;
+        }
+        else if (meals[i] == employer.getOrder(i/3).getName()) {
+            number++;
+        }
+        numberOfOrders.insert(meals[i], number);
+    }
+ */
+    ordersTable->setTable(numberOfOrders.keys(),numberOfOrders.values());
+    ordersTable->exec();
 
 }
 
@@ -549,8 +614,6 @@ void Canteen::on_orderButton_clicked()
     QString name = ui.treeMenu->currentItem()->text(1);
     QString price = ui.treeMenu->currentItem()->text(2);
     QString studentPrice = ui.treeMenu->currentItem()->text(3);
-
-    float discount = (price.toFloat() - studentPrice.toFloat()) / price.toFloat();
 
     Meal currentMeal = Meal(name, price.toFloat(), discount);
 
@@ -602,11 +665,9 @@ void Canteen::on_ShowOrderButton_clicked()
 
             QTreeWidgetItem* childItem = new QTreeWidgetItem();
             childItem->setText(1, student.getOrder(i).getName());
-            childItem->setText(2, p.setNum(student.getOrder(i).getPrice()));
-
+            childItem->setText(2, p.setNum(student.getOrder(i).getPrice()*discount));
             parent->addChild(childItem);
         }
-        
     }
     else if (loginType == "Employee") {
         for (int i = 0; i < 7; i++)
@@ -628,8 +689,6 @@ void Canteen::on_cancelButton_clicked()
     QString name = ui.treeOrder->currentItem()->text(1);
     QString price = ui.treeOrder->currentItem()->text(2);
     QString studentPrice = ui.treeOrder->currentItem()->text(3);
-
-    float discount = (price.toFloat() - studentPrice.toFloat()) / price.toFloat();
 
     Meal currentMeal = Meal(name, price.toFloat(), discount);
 
