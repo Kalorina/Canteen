@@ -288,6 +288,102 @@ int Canteen::findMealDay(QString str)
     }
 }
 
+void Canteen::usersOrdersOutput()
+{
+    QString day = date.currentDate().toString("dd.MM.yyyy");
+
+    QString fileName = "UsersOrders.csv";
+    
+    QFile orders(fileName);
+
+    //orders.setPermissions(QFileDevice::WriteUser);
+
+    if (orders.open(QIODevice::WriteOnly)) {
+        QTextStream out(&orders);
+
+        out << day << "\n";
+
+        if (loginType == "Student") {
+            out << student.getLoginName(); 
+            for (int i = 0; i < 7; i++)
+            {
+                if (student.getOrder(i).getName() != "") {
+                    out << "," << student.getOrder(i).getName();
+                }
+
+            }
+            out << "\n";
+
+        }else if (loginType == "Employee") {
+            out << employer.getLoginName();
+            for (int i = 0; i < 7; i++)
+            {
+                if (employer.getOrder(i).getName() != "") {
+                    out << "," << employer.getOrder(i).getName();
+                }
+
+            }
+            out << "\n";
+        }
+
+        orders.close();
+
+        qDebug() << "users orders are in file.";
+    }
+    else {
+        qDebug() << "file did not open.";
+        qDebug() << orders.errorString();
+        return;
+    }
+        
+
+    
+   
+}
+
+void Canteen::numerOfOrdersOutPut()
+{
+    QString day = date.currentDate().toString("dd.MM.yyyy");
+    QString n;
+
+    QString fileName = "NumberOfOrders.csv";
+
+    QFile orders(fileName);
+
+    //orders.setPermissions(QFileDevice::WriteUser);
+
+    if (orders.open(QIODevice::WriteOnly)) {
+        QTextStream out(&orders);
+
+        out << day << "\n";
+        for (int i = 0; i < 21; i++) 
+        {
+            out << numberOfOrders.key(i) << "," << n.setNum(numberOfOrders.value(meals[i])) << "\n";
+        }
+        orders.close();
+
+        qDebug() << "numbers of orders are in file.";
+    }
+    else {
+        qDebug() << "file did not open.";
+        qDebug() << orders.errorString();
+        return;
+    }
+}
+
+void Canteen::updateEmployeesData()
+{
+
+}
+
+void Canteen::updateStudentData()
+{
+}
+
+void Canteen::updateStaffData()
+{
+}
+
 //Login
 
 void Canteen::SignIn()
@@ -317,7 +413,9 @@ void Canteen::DialogAccepted() {
                 msgBox.setText("Wrong name or password.");
                 msgBox.exec();
                 qDebug() << "Nespravny login";
+                SignIn();
                 break;
+                
             }
             else {
                 ui.menuStudent->setEnabled(true);
@@ -340,6 +438,7 @@ void Canteen::DialogAccepted() {
                 msgBox.setText("Wrong name or password.");
                 msgBox.exec();
                 qDebug() << "Nespravny login";
+                SignIn();
                 break;
             }
             else {
@@ -362,6 +461,7 @@ void Canteen::DialogAccepted() {
                 msgBox.setText("Wrong name or password.");
                 msgBox.exec();
                 qDebug() << "Nespravny login";
+                SignIn();
                 break;
             }
             else {
@@ -383,6 +483,7 @@ void Canteen::DialogAccepted() {
                     msgBox.setText("Wrong name or password.");
                     msgBox.exec();
                     qDebug() << "Nespravny login";
+                    SignIn();
                     break;
                 }
             }
@@ -412,6 +513,8 @@ void Canteen::DialogOrdersAccepted()
         }
         numberOfOrders.insert(meals[i], number);
     }
+
+    numerOfOrdersOutPut();
 }
 
 void Canteen::DialogChangeStatusAccepted()
@@ -578,11 +681,6 @@ void Canteen::on_showMenuButton_clicked()
 
     QString fileName = "Menu.csv";
 
-    if (fileName.isEmpty()) {
-        qDebug() << "file is empty";
-        return;
-    }
-
     QFileInfo Finfo(fileName);
 
     if (Finfo.suffix() == "csv") {
@@ -743,6 +841,8 @@ void Canteen::on_ShowCreditButton_clicked()
 
 void Canteen::on_LogOutButton_clicked()
 {
+    usersOrdersOutput();
+
     ui.menuAdmin->setDisabled(true);
     ui.menuEmployee->setDisabled(true);
     ui.menuStaff->setDisabled(true);
@@ -752,4 +852,5 @@ void Canteen::on_LogOutButton_clicked()
     ui.LogOutButton->setDisabled(true);
 
     SignIn();
+
 }

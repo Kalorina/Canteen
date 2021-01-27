@@ -72,6 +72,7 @@ public:
     Meal getOrder(int day) { return orders.value(day); }
 
     void removeOrder(int day) { orders.remove(day); }
+
 };
 
 class Staff : public User {

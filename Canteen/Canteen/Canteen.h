@@ -64,6 +64,17 @@ private:
 
     QMap<QString,int> numberOfOrders;
 
+
+    QDate date;
+    void usersOrdersOutput();
+
+    void numerOfOrdersOutPut();
+
+    void updateEmployeesData();
+    void updateStudentData();
+    void updateStaffData();
+
+
 private slots:
 
     void DialogAccepted();
