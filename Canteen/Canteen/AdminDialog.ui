@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>489</height>
+    <width>396</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,6 +51,25 @@
         <item>
          <property name="text">
           <string>Staff</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBoxActionUser">
+        <item>
+         <property name="text">
+          <string>Edit User</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Delete User</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>New User</string>
          </property>
         </item>
        </widget>

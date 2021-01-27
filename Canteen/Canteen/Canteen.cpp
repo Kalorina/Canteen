@@ -174,68 +174,49 @@ void Canteen::fillStaff()
 
 bool Canteen::findLoginStudent(QString name, QString pass)
 {
-    bool a=false;
     for (int i = 0; i < students.size(); i++)
     {
-        if (students[i].getLoginName() == name) {
-            if (students[i].getPassword() == pass) {
-                a = true;
-                student.setLoginName(name);
-                student.setPassword(pass);
-                student.setCredit(students[i].getCredit());
-                student.setSubject(students[i].getSubject());
+        if (students[i].getLoginName() == name && students[i].getPassword() == pass) {
+            student.setLoginName(name);
+            student.setPassword(pass);
+            student.setCredit(students[i].getCredit());
+            student.setSubject(students[i].getSubject());
 
-                return true;
-            }
+            return true;
         }
     }
-    if (a != true) {
-        return false;
-    }
+    return false;
 }
 
 bool Canteen::findLoginEmployee(QString name, QString pass)
 {
-    bool a = false;
+   
     for (int i = 0; i < employees.size(); i++)
     {
-        if (employees[i].getLoginName() == name) {
-            if (employees[i].getPassword() == pass) {
-                employer.setLoginName(name);
-                employer.setPassword(pass);
-                employer.setCredit(employees[i].getCredit());
-                employer.setPost(employees[i].getPost());
-
-                a = true;
-                return true;
-            }
+        if (employees[i].getLoginName() == name && employees[i].getPassword() == pass) {
+            employer.setLoginName(name);
+            employer.setPassword(pass);
+            employer.setCredit(employees[i].getCredit());
+            employer.setPost(employees[i].getPost());
+            return true;
         }
     }
-    if (a != true) {
-        return false;
-    }
+    return false;
 }
 
 bool Canteen::findLoginStaff(QString name, QString pass)
 {
-    bool a;
+   
     for (int i = 0; i < staff.size(); i++)
     {
-        if (staff[i].getLoginName() == name) {
-            if (staff[i].getPassword() == pass) {
-                member.setLoginName(name);
-                member.setPassword(pass);
-                member.setPost(staff[i].getPost());
-
-                a = true;
-                return true;
-            }
+        if (staff[i].getLoginName() == name && staff[i].getPassword() == pass) {
+            member.setLoginName(name);
+            member.setPassword(pass);
+            member.setPost(staff[i].getPost());
+            return true;
         }
     }
-    if (a != true) {
-        return false;
-    }
-    
+    return false;
 }
 
 void Canteen::fillMenuData() {
@@ -603,7 +584,8 @@ void Canteen::DialogChangeStatusAccepted()
 
 void Canteen::DialogAdmiAccepted()
 {
-    QString currentLoginType = adminField->getloginType();
+    QString currentAction = adminField->getActionUser();
+    QString currentUserType = adminField->getloginType();
 
     QString currentLoginName = adminField->getLoginName();
     QString currentPassword = adminField->getPassword();
@@ -615,37 +597,65 @@ void Canteen::DialogAdmiAccepted()
     QString newDiscount = adminField->getNewDiscount();
     discount = newDiscount.toFloat();
 
-    if (currentLoginType == "Student") {
-        int i = 0;
-        do {
-            if (findLoginStudent(currentLoginName, currentPassword) == true) {
-                students[i].setLoginName(newLoginName);
-                students[i].setPassword(newPassword);
-                students[i].setCredit(newCredit.toFloat());
-            }
-        } while (i < students.size());
-        updateStudentData();
+    if (currentAction == "Edit User") {
+        if (currentUserType == "Student") {
+            int i = 0;
+            do {
+                if (findLoginStudent(currentLoginName, currentPassword) == true) {
+                    students[i].setLoginName(newLoginName);
+                    students[i].setPassword(newPassword);
+                    students[i].setCredit(newCredit.toFloat());
+                }
+                i++;
+            } while (i < students.size());
+            updateStudentData();
+        }
+        else if (currentUserType == "Employee") {
+            int i = 0;
+            do {
+                if (findLoginStudent(currentLoginName, currentPassword) == true) {
+                    employees[i].setLoginName(newLoginName);
+                    employees[i].setPassword(newPassword);
+                    employees[i].setCredit(newCredit.toFloat());
+                }
+                i++;
+            } while (i < employees.size());
+            updateEmployeesData();
+        }
     }
-    else if (currentLoginType == "Employee") {
-        int i = 0;
-        do {
-            if (findLoginStudent(currentLoginName, currentPassword) == true) {
-                employees[i].setLoginName(newLoginName);
-                employees[i].setPassword(newPassword);
-                employees[i].setCredit(newCredit.toFloat());
-            }
-        } while (i < employees.size());
-        updateEmployeesData();
+    else if (currentAction == "Delete User") {
+        if (currentUserType == "Student") {
+            int i = 0;
+            do {
+                if (findLoginStudent(currentLoginName, currentPassword)) {
+                    students.removeAt(i);
+                }
+                i++;
+            } while (i < students.size());
+            updateStudentData();
+        }
+        else if (currentUserType == "Employee") {
+            int i = 0;
+            do {
+                if (findLoginStudent(currentLoginName, currentPassword)) {
+                    employees.removeAt(i);
+                }
+                i++;
+            } while (i < employees.size());
+            updateEmployeesData();
+        }
     }
-    else if (currentLoginType == "Staff") {
-        int i = 0;
-        do {
-            if (findLoginStudent(currentLoginName, currentPassword) == true) {
-                staff[i].setLoginName(newLoginName);
-                staff[i].setPassword(newPassword);
-            }
-        } while (i < staff.size());
-        updateStaffData();
+    else if (currentAction == "New User") {
+        if (currentUserType == "Student") {
+            Student s = Student(newLoginName, newPassword, "", newCredit.toFloat());
+            students.push_back(s);
+            updateStudentData();
+        }
+        else if (currentUserType == "Employee") {
+            Employee e = Employee(newLoginName, newPassword, "", newCredit.toFloat());
+            employees.push_back(e);
+            updateEmployeesData();
+        }
     }
 }
 

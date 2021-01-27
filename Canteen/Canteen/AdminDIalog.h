@@ -15,6 +15,7 @@ public:
 	}
 
 	QString getloginType() { return adminUi->comboBoxLoginType->currentText(); }
+	QString getActionUser() { return adminUi->comboBoxActionUser->currentText(); }
 	QString getLoginName() { return adminUi->lineEditLoginName->text(); }
 	QString getPassword() { return adminUi->lineEditLoginPassword->text(); }
 
