@@ -1,4 +1,5 @@
 #include "Canteen.h"
+#include <QCryptographicHash>
 
 Canteen::Canteen(QWidget *parent)
     : QMainWindow(parent)
@@ -434,6 +435,13 @@ void Canteen::updateStaffData()
 
 //Login
 
+QString Canteen::hashPassword(QString pass)
+{
+    QByteArray passByte = pass.toUtf8();
+    QByteArray passHash = QCryptographicHash::hash(passByte, QCryptographicHash::Sha256);
+    return QString(passHash.toBase64());
+}
+
 void Canteen::SignIn()
 {
     login = new LoginDialog(this);
@@ -447,7 +455,7 @@ void Canteen::DialogAccepted() {
 
     loginType = login->getLoginType();
     loginName = login->getName();
-    loginPassword = login->getPassword();
+    loginPassword = hashPassword(login->getPassword());
     
     LoginDialog* login = static_cast<LoginDialog*>(sender());
     
@@ -609,10 +617,10 @@ void Canteen::DialogAdmiAccepted()
     QString currentUserType = adminField->getloginType();
 
     QString currentLoginName = adminField->getLoginName();
-    QString currentPassword = adminField->getPassword();
+    QString currentPassword = hashPassword(adminField->getPassword());
 
     QString newLoginName = adminField->getNewLoginName();
-    QString newPassword = adminField->getNewPassword();
+    QString newPassword = hashPassword(adminField->getNewPassword());
     QString newCredit = adminField->getNewCredit();
 
     QString newDiscount = adminField->getNewDiscount();
@@ -633,13 +641,23 @@ void Canteen::DialogAdmiAccepted()
         else if (currentUserType == "Employee") {
             int i = 0;
             do {
-                if (findLoginStudent(currentLoginName, currentPassword) == true) {
+                if (findLoginEmployee(currentLoginName, currentPassword) == true) {
                     employees[i].setLoginName(newLoginName);
                     employees[i].setPassword(newPassword);
                     employees[i].setCredit(newCredit.toFloat());
                 }
                 i++;
             } while (i < employees.size());
+        }
+        else if (currentUserType == "Staff") {
+            int i = 0;
+            do {
+                if (findLoginStaff(currentLoginName, currentPassword) == true) {
+                    staff[i].setLoginName(newLoginName);
+                    staff[i].setPassword(newPassword);
+                }
+                i++;
+            } while (i < staff.size());
         }
     }
     else if (currentAction == "Delete User") {
@@ -655,11 +673,20 @@ void Canteen::DialogAdmiAccepted()
         else if (currentUserType == "Employee") {
             int i = 0;
             do {
-                if (findLoginStudent(currentLoginName, currentPassword)) {
+                if (findLoginEmployee(currentLoginName, currentPassword)) {
                     employees.removeAt(i);
                 }
                 i++;
             } while (i < employees.size());
+        }
+        else if (currentUserType == "Stuff") {
+            int i = 0;
+            do {
+                if (findLoginStaff(currentLoginName, currentPassword)) {
+                    staff.removeAt(i);
+                }
+                i++;
+            } while (i < staff.size());
         }
     }
     else if (currentAction == "New User") {
@@ -671,10 +698,15 @@ void Canteen::DialogAdmiAccepted()
             Employee e = Employee(newLoginName, newPassword, "", newCredit.toFloat());
             employees.push_back(e);
         }
+        else if (currentUserType == "Staff") {
+            Staff m = Staff(newLoginName, newPassword, "");
+            staff.push_back(m);
+        }
     }
 
     updateEmployeesData();
     updateStudentData();
+    updateStaffData();
 }
 
 //MenuBar

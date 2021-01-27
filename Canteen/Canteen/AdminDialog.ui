@@ -45,6 +45,11 @@
         </item>
         <item>
          <property name="text">
+          <string>Staff</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>Student</string>
          </property>
         </item>

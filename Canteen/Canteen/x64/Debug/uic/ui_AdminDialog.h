@@ -72,6 +72,7 @@ public:
         comboBoxLoginType = new QComboBox(groupBoxAdmin);
         comboBoxLoginType->addItem(QString());
         comboBoxLoginType->addItem(QString());
+        comboBoxLoginType->addItem(QString());
         comboBoxLoginType->setObjectName(QString::fromUtf8("comboBoxLoginType"));
 
         verticalLayout_2->addWidget(comboBoxLoginType);
@@ -182,7 +183,8 @@ public:
         groupBoxAdmin->setTitle(QString());
         label->setText(QCoreApplication::translate("DialogAdmin", "Admin Field", nullptr));
         comboBoxLoginType->setItemText(0, QCoreApplication::translate("DialogAdmin", "Employee", nullptr));
-        comboBoxLoginType->setItemText(1, QCoreApplication::translate("DialogAdmin", "Student", nullptr));
+        comboBoxLoginType->setItemText(1, QCoreApplication::translate("DialogAdmin", "Staff", nullptr));
+        comboBoxLoginType->setItemText(2, QCoreApplication::translate("DialogAdmin", "Student", nullptr));
 
         comboBoxActionUser->setItemText(0, QCoreApplication::translate("DialogAdmin", "Edit User", nullptr));
         comboBoxActionUser->setItemText(1, QCoreApplication::translate("DialogAdmin", "Delete User", nullptr));

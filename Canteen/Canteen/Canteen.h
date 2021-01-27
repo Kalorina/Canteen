@@ -27,6 +27,8 @@ private:
     ChangeStatus* statusChange;
     AdminDialog* adminField;
 
+    QString hashPassword(QString pass);
+
     void SignIn(); 
 
     float discount=0.2;
