@@ -162,14 +162,6 @@ void Canteen::fillStaff()
 
         staff.push_back(e);
     }
-/*
-    for (int i = 0; i < staff.size(); i++)
-    {
-        qDebug() << staff[i].getLoginName();
-        qDebug() << staff[i].getPassword();
-        qDebug() << staff[i].getPost();
-    }
-*/
 }
 
 bool Canteen::findLoginStudent(QString name, QString pass)
@@ -337,9 +329,9 @@ void Canteen::numerOfOrdersOutPut()
         QTextStream out(&numberOrders);
 
         out << day << "\n";
-        for (int i = 0; i < 21; i++) 
+        for (int i = 0; i < numberOfOrders.size(); i++) 
         {
-            out << numberOfOrders.key(i) << "," << n.setNum(numberOfOrders.value(meals[i])) << "\n";
+            out << meals[i] << "," << n.setNum(numberOfOrders.value(meals[i])) << "\n";
         }
         numberOrders.close();
 
@@ -359,6 +351,8 @@ void Canteen::updateEmployeesData()
     QFile employeesFile(fileName);
 
     //orders.setPermissions(QFileDevice::WriteUser);
+
+    employeesFile.remove();
 
     if (employeesFile.open(QIODevice::WriteOnly)) {
         QTextStream out(&employeesFile);
@@ -388,6 +382,8 @@ void Canteen::updateStudentData()
 
     //orders.setPermissions(QFileDevice::WriteUser);
 
+    studentsFile.remove();
+
     if (studentsFile.open(QIODevice::WriteOnly)) {
         QTextStream out(&studentsFile);
 
@@ -414,6 +410,8 @@ void Canteen::updateStaffData()
     QFile staffFile(fileName);
 
     //orders.setPermissions(QFileDevice::WriteUser);
+
+    staffFile.remove();
 
     if (staffFile.open(QIODevice::WriteOnly)) {
         QTextStream out(&staffFile);
@@ -563,28 +561,51 @@ void Canteen::DialogOrdersAccepted()
         }
         numberOfOrders.insert(meals[i], number);
     }
-
-    numerOfOrdersOutPut();
+    ordersTable->setTable(numberOfOrders.keys(), numberOfOrders.values());
 }
 
-void Canteen::DialogChangeStatusAccepted()
+void Canteen::DialogChangeStatusAccepted() 
 {
     QString newStatus = statusChange->getNewStatus();
 
     if (loginType == "Student") {
         student.setSubject(newStatus);
+        for (int i = 0; i < students.size(); i++)
+        {
+            if (students[i].getLoginName() == student.getLoginName() && students[i].getPassword() == student.getPassword()) {
+                students[i].setSubject(newStatus);
+            }
+        }
+        updateStudentData();
     }
     else if (loginType == "Employee") {
         employer.setPost(newStatus);
+        for (int i = 0; i < employees.size(); i++)
+        {
+            if (employees[i].getLoginName() == employer.getLoginName() && employees[i].getPassword() == employer.getPassword()) {
+
+                employees[i].setPost(newStatus);
+            }
+        }
+        updateEmployeesData();
     }
     else if (loginType == "Staff") {
         member.setPost(newStatus);
+        for (int i = 0; i < staff.size(); i++)
+        {
+            if (staff[i].getLoginName() == member.getLoginName() && staff[i].getPassword() == member.getPassword()) {
+
+                staff[i].setPost(newStatus);
+            }
+        }
+        updateStaffData();
     }
 }
 
 void Canteen::DialogAdmiAccepted()
 {
     QString currentAction = adminField->getActionUser();
+
     QString currentUserType = adminField->getloginType();
 
     QString currentLoginName = adminField->getLoginName();
@@ -608,7 +629,6 @@ void Canteen::DialogAdmiAccepted()
                 }
                 i++;
             } while (i < students.size());
-            updateStudentData();
         }
         else if (currentUserType == "Employee") {
             int i = 0;
@@ -620,7 +640,6 @@ void Canteen::DialogAdmiAccepted()
                 }
                 i++;
             } while (i < employees.size());
-            updateEmployeesData();
         }
     }
     else if (currentAction == "Delete User") {
@@ -632,7 +651,6 @@ void Canteen::DialogAdmiAccepted()
                 }
                 i++;
             } while (i < students.size());
-            updateStudentData();
         }
         else if (currentUserType == "Employee") {
             int i = 0;
@@ -642,21 +660,21 @@ void Canteen::DialogAdmiAccepted()
                 }
                 i++;
             } while (i < employees.size());
-            updateEmployeesData();
         }
     }
     else if (currentAction == "New User") {
         if (currentUserType == "Student") {
             Student s = Student(newLoginName, newPassword, "", newCredit.toFloat());
             students.push_back(s);
-            updateStudentData();
         }
         else if (currentUserType == "Employee") {
             Employee e = Employee(newLoginName, newPassword, "", newCredit.toFloat());
             employees.push_back(e);
-            updateEmployeesData();
         }
     }
+
+    updateEmployeesData();
+    updateStudentData();
 }
 
 //MenuBar
@@ -706,14 +724,14 @@ void Canteen::on_actionMenu_for_week_triggered() {
 void Canteen::on_actionChange_Login_triggered()
 {
     adminField = new AdminDialog(this);
-    connect(adminField, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    connect(adminField, SIGNAL(accepted()), this, SLOT(DialogAdmiAccepted()));
     adminField->exec();
 }
 
 void Canteen::on_actionChangePostEmployee_triggered()
 {
     statusChange = new ChangeStatus(this);
-    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogChangeStatusAccepted()));
     statusChange->exec();
 
 }
@@ -721,38 +739,23 @@ void Canteen::on_actionChangePostEmployee_triggered()
 void Canteen::on_actionChange_PositionStaff_triggered()
 {
     statusChange = new ChangeStatus(this);
-    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogChangeStatusAccepted()));
     statusChange->exec();
 }
 
 void Canteen::on_actionChange_Subject_triggered()
 {
     statusChange = new ChangeStatus(this);
-    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
+    connect(statusChange, SIGNAL(accepted()), this, SLOT(DialogChangeStatusAccepted()));
     statusChange->exec();
 }
 
 void Canteen::on_actionNumber_of_Order_triggered()
 {
     ordersTable = new Orders(this);
-    connect(ordersTable, SIGNAL(accepted()), this, SLOT(DialogAccepted()));
- /*
-    for (int i = 0; i < 21; i++)
-    {
-        int number = 0;
-
-        if (meals[i] == student.getOrder(i/3).getName()) {
-            number++;
-        }
-        else if (meals[i] == employer.getOrder(i/3).getName()) {
-            number++;
-        }
-        numberOfOrders.insert(meals[i], number);
-    }
- */
-    ordersTable->setTable(numberOfOrders.keys(),numberOfOrders.values());
+    connect(ordersTable, SIGNAL(accepted()), this, SLOT(DialogOrdersAccepted()));
     ordersTable->exec();
-
+    numerOfOrdersOutPut();
 }
 
 //Employyes + Students 
