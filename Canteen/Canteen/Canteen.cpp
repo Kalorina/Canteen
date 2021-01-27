@@ -252,6 +252,36 @@ void Canteen::fillMenuData() {
     }
 }
 
+void Canteen::writeMenuData()
+{
+    QString fileName = "Menu.csv";
+
+    QFile menu(fileName);
+
+    //orders.setPermissions(QFileDevice::WriteUser);
+
+    menu.remove();
+
+    if (menu.open(QIODevice::WriteOnly)) {
+        QTextStream out(&menu);
+
+        for (int i = 0; i < menuData.size(); i++)
+        {
+            out << menuData[i] << "\n";
+        }
+
+        menu.close();
+
+        qDebug() << "new menu are in file.";
+    }
+    else {
+        qDebug() << "file did not open.";
+        qDebug() << menu.errorString();
+        return;
+    }
+
+}
+
 int Canteen::findMealDay(QString str)
 {
     for (int i = 0; i < meals.size(); i++)
@@ -750,7 +780,7 @@ void Canteen::on_actionMenu_for_week_triggered() {
     ui.treeMenu->clear();
 
     fillMenuData();  
-
+    writeMenuData();
 }
 
 void Canteen::on_actionChange_Login_triggered()

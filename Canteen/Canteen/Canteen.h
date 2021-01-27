@@ -60,8 +60,9 @@ private:
     QVector<QString> menuData;
     QVector<QString> meals;
     QVector<Day> days = { Day(),Day(),Day(),Day(), Day(),Day(), Day()};
-    void fillMenuData();
 
+    void fillMenuData();
+    void writeMenuData();
     int findMealDay(QString s);
 
     QMap<QString,int> numberOfOrders;
