@@ -348,40 +348,109 @@ void Canteen::numerOfOrdersOutPut()
 
     QString fileName = "NumberOfOrders.csv";
 
-    QFile orders(fileName);
+    QFile numberOrders(fileName);
 
     //orders.setPermissions(QFileDevice::WriteUser);
 
-    if (orders.open(QIODevice::WriteOnly)) {
-        QTextStream out(&orders);
+    if (numberOrders.open(QIODevice::WriteOnly)) {
+        QTextStream out(&numberOrders);
 
         out << day << "\n";
         for (int i = 0; i < 21; i++) 
         {
             out << numberOfOrders.key(i) << "," << n.setNum(numberOfOrders.value(meals[i])) << "\n";
         }
-        orders.close();
+        numberOrders.close();
 
         qDebug() << "numbers of orders are in file.";
     }
     else {
         qDebug() << "file did not open.";
-        qDebug() << orders.errorString();
+        qDebug() << numberOrders.errorString();
         return;
     }
 }
 
 void Canteen::updateEmployeesData()
 {
+    QString fileName = "Employees.csv";
+
+    QFile employeesFile(fileName);
+
+    //orders.setPermissions(QFileDevice::WriteUser);
+
+    if (employeesFile.open(QIODevice::WriteOnly)) {
+        QTextStream out(&employeesFile);
+
+        for (int i = 0; i < employees.size(); i++)
+        {
+            out << employees[i].getLoginName() << "," << employees[i].getPassword() << "," << employees[i].getPost() << "," << employees[i].getCredit() << "\n";
+        }
+
+        employeesFile.close();
+
+        qDebug() << "employees data updated.";
+    }
+    else {
+        qDebug() << "file did not open.";
+        qDebug() << employeesFile.errorString();
+        return;
+    }
 
 }
 
 void Canteen::updateStudentData()
 {
+    QString fileName = "Students.csv";
+
+    QFile studentsFile(fileName);
+
+    //orders.setPermissions(QFileDevice::WriteUser);
+
+    if (studentsFile.open(QIODevice::WriteOnly)) {
+        QTextStream out(&studentsFile);
+
+        for (int i = 0; i < students.size(); i++)
+        {
+            out << students[i].getLoginName() << "," << students[i].getPassword() << "," << students[i].getSubject() << "," << students[i].getCredit() << "\n";
+        }
+
+        studentsFile.close();
+
+        qDebug() << "students data updated.";
+    }
+    else {
+        qDebug() << "file did not open.";
+        qDebug() << studentsFile.errorString();
+        return;
+    }
 }
 
 void Canteen::updateStaffData()
 {
+    QString fileName = "Staff.csv";
+
+    QFile staffFile(fileName);
+
+    //orders.setPermissions(QFileDevice::WriteUser);
+
+    if (staffFile.open(QIODevice::WriteOnly)) {
+        QTextStream out(&staffFile);
+
+        for (int i = 0; i < students.size(); i++)
+        {
+            out << staff[i].getLoginName() << "," << staff[i].getPassword() << "," << staff[i].getPost() << "\n";
+        }
+
+        staffFile.close();
+
+        qDebug() << "staff data updated.";
+    }
+    else {
+        qDebug() << "file did not open.";
+        qDebug() << staffFile.errorString();
+        return;
+    }
 }
 
 //Login
@@ -555,6 +624,7 @@ void Canteen::DialogAdmiAccepted()
                 students[i].setCredit(newCredit.toFloat());
             }
         } while (i < students.size());
+        updateStudentData();
     }
     else if (currentLoginType == "Employee") {
         int i = 0;
@@ -565,6 +635,7 @@ void Canteen::DialogAdmiAccepted()
                 employees[i].setCredit(newCredit.toFloat());
             }
         } while (i < employees.size());
+        updateEmployeesData();
     }
     else if (currentLoginType == "Staff") {
         int i = 0;
@@ -574,6 +645,7 @@ void Canteen::DialogAdmiAccepted()
                 staff[i].setPassword(newPassword);
             }
         } while (i < staff.size());
+        updateStaffData();
     }
 }
 
@@ -842,7 +914,7 @@ void Canteen::on_ShowCreditButton_clicked()
 void Canteen::on_LogOutButton_clicked()
 {
     usersOrdersOutput();
-
+   
     ui.menuAdmin->setDisabled(true);
     ui.menuEmployee->setDisabled(true);
     ui.menuStaff->setDisabled(true);
